@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pyresearch Pakistan - Security Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #0f172a, #1e293b);
+      --card: rgba(30, 41, 59, 0.7);
+      --glass: rgba(255, 255, 255, 0.1);
+      --primary: #00d4ff;
+      --danger: #ff3b5c;
+      --success: #39ff14;
+      --text: #f8fafc;
+      --pak-green: #006400;
+      --pak-white: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      background: linear-gradient(45deg, #006400, #00d4ff, #ff3b5c, #ffd700);
+      background-size: 400%;
+      animation: gradient 15s ease infinite;
+      opacity: 0.1;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--pak-green), var(--primary), var(--danger));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .pak-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      margin-top: 10px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+      gap: 2rem;
+      max-width: 1700px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 1.5rem;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+      transition: all 0.4s ease;
+      animation: float 6ll 6s ease-in-out infinite;
+    }
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 35px 70px rgba(0, 212, 255, 0.3);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .card-header {
+      padding: 1.2rem 1.8rem;
+      background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(255,59,92,0.2));
+      color: white;
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 12px; height: 12px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(57,255,20,0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(57,255,20,0); }
+      100% { box-shadow: 0 0 0 0 rgba(57,255,20,0); }
+    }
+
+    .feed {
+      height: 500px;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feed img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .feed:hover img {
+      transform: scale(1.03);
+    }
+
+    .watermark {
+      position: absolute;
+      bottom: 15px; right: 15px;
+      background: rgba(0,0,0,0.7);
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Notifications */
+    .notifications {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 380px;
+    }
+
+    .alert {
+      background: var(--glass);
+      backdrop-filter: blur(15px);
+      border-left: 6px solid;
+      padding: 1.2rem;
+      border-radius: 1rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      animation: slideIn 0.5s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .alert.danger { border-color: var(--danger); }
+    .alert .close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+
+    .alert-time { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; }
+
+    .footer {
+      text-align: center;
+      margin: 4rem 1.5rem 2rem;
+      padding: 1.5rem;
+      color: #64748b;
+      font-size: 0.95rem;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; padding: 0 1rem; }
+      .header h1 { font-size: 2.3rem; }
+      .feed { height: 380px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-animation"></div>
+
+  <div class="header">
+    <h1>Pyresearch </h1>
+    <p>Advanced AI Security System</p>
+    <div class="pak-flag">
+      <span></span> 
+    </div>
+  </div>
+
+  <div class="notifications" id="notifications"></div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-header">
+        <span><i class="fas fa-video"></i> Camera 1 - shoping mall</span>
+        <div class="status"><div class="dot"></div> LIVE</div>
+      </div>
+      <div class="feed">
+        <img src="/cam1" alt="Cam 1" />
+        <div class="watermark">demo.mp4</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" style="background: linear-gradient(135deg, rgba(255,59,92,0.3), rgba(239,68,68,0.3));">
+        <span><i class="fas fa-store"></i> Camera 2 - shoping mall</span>
+        <div class="status"><div class="dot"></div> LIVE</div>
+      </div>
+      <div class="feed">
+        <img src="/cam2" alt="Cam 2" />
+        <div class="watermark">demo2.mp4</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 Pyresearch  | AI-Powered Monitoring | Made with <i class="fas fa-heart" style="color: #ff3b5c;"></i> 
+  </div>
+
+  <audio id="alert-sound" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjV..."></audio>
+
+  <script>
+    const notifContainer = document.getElementById('notifications');
+    const alertSound = document.getElementById('alert-sound');
+    let lastCount = 0;
+
+    function showAlert(a) {
+      const div = document.createElement('div');
+      div.className = `alert ${a.type}`;
+      div.innerHTML = `
+        <div>
+          <strong>${a.msg}</strong>
+          <div class="alert-time">${a.time}</div>
+        </div>
+        <button class="close" onclick="this.parentElement.remove()">&times;</button>
+      `;
+      notifContainer.prepend(div);
+      alertSound.currentTime = 0;
+      alertSound.play().catch(() => {});
+      setTimeout(() => div.remove(), 6000);
+    }
+
+    setInterval(() => {
+      fetch('/alerts')
+        .then(r => r.json())
+        .then(alerts => {
+          if (alerts.length > lastCount) {
+            alerts.slice(lastCount).forEach(showAlert);
+          }
+          lastCount = alerts.length;
+        });
+    }, 1000);
+
+    document.querySelectorAll('img').forEach(img => {
+      img.onerror = () => setTimeout(() => img.src = img.src + '?t=' + Date.now(), 1000);
+    });
+  </script>
+
+</body>
+</html>
